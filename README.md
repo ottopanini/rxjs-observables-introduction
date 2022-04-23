@@ -19,5 +19,43 @@ The essential concepts in RxJS which solve async event management are:
 **Schedulers:** are centralized dispatchers to control concurrency, allowing us to coordinate when computation happens on e.g. setTimeout or requestAnimationFrame or others.  
 (https://rxjs.dev/guide/overview)
 
- ## Quick Start
- 
+## Quick Start
+Lets try some things with observables. 
+
+```ts
+name$.subscribe(value => console.log(value)); 
+```
+emits 3 values.
+
+```ts
+storeDataOnServer('Some value');
+```
+storeDataOnServer returns an observable but nothing happens so far...
+
+with added subscription...
+```ts    
+storeDataOnServer('Some value').subscribe(value => console.log(value));
+```
+... it stores the value.
+
+add error handler the old way via callbacks
+```ts
+storeDataOnServerError('Some value').subscribe(
+  value => console.log(value),
+  err => console.log('Error when saving: ', err.message)
+);
+```
+
+use an **observer object** instead:
+```ts
+storeDataOnServerError('Some value').subscribe({
+  next: value => console.log(value),
+  error: err => console.log('Error when saving: ', err.message)
+});
+```
+
+
+
+
+
+

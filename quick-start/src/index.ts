@@ -20,5 +20,12 @@ storeDataOnServerError('Some value').subscribe(
   err => console.log('Error when saving: ', err.message)
 );
 
+// use the observer object instead
+storeDataOnServerError('Some value').subscribe({
+  next: value => console.log(value),
+  error: err => console.log('Error when saving: ', err.message)
+});
+
+
 
 
