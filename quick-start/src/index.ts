@@ -14,4 +14,11 @@ storeDataOnServer('Some value');
 storeDataOnServer('Some value').subscribe(value => console.log(value));
 // it stores the value
 
+// add error handler the old way via callbacks
+storeDataOnServerError('Some value').subscribe(
+  value => console.log(value),
+  err => console.log('Error when saving: ', err.message)
+);
+
+
 
