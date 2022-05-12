@@ -7,7 +7,11 @@ const observable$ = new Observable<string>(subscriber => {
     subscriber.next('Charlie');
 });
 
-observable$.subscribe();
+const observer = {
+    next: (value: any) => console.log(value)
+}
+
+observable$.subscribe(observer);
 
 
 
