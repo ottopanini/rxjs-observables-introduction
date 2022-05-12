@@ -5,9 +5,9 @@ new Observable<string>(subscriber => {
     subscriber.next('Alice');
     subscriber.next('Ben');
     subscriber.next('Charlie');
-});
+}).subscribe();
 
-// -> nothing happens
+
 
 
 
