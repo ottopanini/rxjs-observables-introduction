@@ -3,11 +3,19 @@ import {Observable} from 'rxjs';
 const observable$ = new Observable<string>(subscriber => {
     console.log('Observable executed');
     subscriber.next('Alice');
-    subscriber.next('Ben');
-    subscriber.next('Charlie');
+    setTimeout(() => subscriber.next('Ben'), 2000);
+    setTimeout(() => subscriber.next('Charlie'), 4000);
 });
 
-observable$.subscribe((value: any) => console.log(value));
+const subscription = observable$.subscribe((value: any) => console.log(value));
+
+setTimeout(() => {
+    console.log('Unsubscribe');
+    subscription.unsubscribe();
+}, 3000);
+
+
+
 
 
 
