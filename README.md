@@ -89,6 +89,8 @@ const observer = {
 runs the observable and connects the **Observer** and the **Observable**. The subscription must be closed.
 ```ts
 const subscription = observable$.subscribe(observer); 
+...
+subscription.unsubscribe(); 
 ```
 
 Workflow:  
@@ -96,8 +98,6 @@ The *subscription* runs first. Then the callbacks of the *observable* are execut
 *observer* code. 
 
 subscription -> observable -> observer 
-
-
 
 
 
