@@ -58,7 +58,7 @@ storeDataOnServerError('Some value').subscribe({
 ## Observable - how does it work
 ### Array vs Stream
 
-Array - immediate access to all members
+Array - immediate access to all members  
 Stream - items can come at various points in time
 
 --> reaktive Programming
@@ -97,7 +97,21 @@ Workflow:
 The *subscription* runs first. Then the callbacks of the *observable* are executed. This executes then on each next call the 
 *observer* code. 
 
-subscription -> observable -> observer 
+subscription (by subscribe on the observable) -> observable -> observer 
+
+*--> Warm-up Observable - Observable, Observer, Subscription*
+
+### Multiple Subscriptions
+
+Each new subscription runs the code inside the observable independantly. 
+Subscribing is just like running a regular function with an observer object as argument.
+
+*--> Warm-up Observable - multiple Subscriptions*
+
+
+
+
+
 
 
 
