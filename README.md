@@ -104,7 +104,8 @@ subscription (by subscribe on the observable) -> observable -> observer
 ### Multiple Subscriptions
 
 Each new subscription runs the code inside the observable independantly. 
-Subscribing is just like running a regular function with an observer object as argument.
+Subscribing is just like running a regular function with an observer wrapped into a Subscriber object as argument 
+passed to the Observable's logic (which is therefore executed).
 
 *--> Warm-up Observable - multiple Subscriptions*
 
