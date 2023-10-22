@@ -183,5 +183,22 @@ console.log('After subdscribe');
 ```
 Key takeaway is here that there is no asynchronous handling here. The code inside the Observable is executed immediately.
 
+### Synchronous Emmission - Next Notification
+A------------------------------------------------>  
+*--> Synchronous Emmission - Next Notification*
+```ts
+import { Observable } from 'rxjs';
+
+const observable$ = new Observable<string>((subscriber) => {
+    console.log('Observable executed');
+    subscriber.next('Alice');
+});
+
+console.log('Before subscription');
+observable$.subscribe((value) => console.log(value));
+console.log('After subdscribe');
+```
+
+
 
 
