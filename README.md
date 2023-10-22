@@ -109,12 +109,79 @@ passed to the Observable's logic (which is therefore executed).
 
 *--> Warm-up Observable - multiple Subscriptions*
 
+### Marbles
 
+if nothing is emmitted:  
+-------------------------------------------------> time
 
+If A, B and C is emitted (via next):   
+----A----B----------------C---------------------->
 
+with complete (|):  
+----A----B----------------C-----------|---------->
 
+With error (X):  
+----A----B----------------C-----------X---------->
 
+getting an error notification.
 
+Notification types:  
+
+| Symbol | Name     | Description |
+|--------|----------|-------------| 
+| A      | next     | 0..many     | 
+| X      | error    | 0..1        |
+| \|     | complete | 0..1        |
+
+#### illegal scenarios
+
+----A----B-------|--------C---------------------->
+
+----A----B-------X--------C---------------------->
+
+----A----B-------X---|--------------------------->
+
+#### Appearance
+
+----A----B-------C--------D------E--------------->
+
+Sometimes numbers are used when they show the logic of the operator in a better way:   
+----5----8-------5-----(-1)------7--------------->
+
+Sometimes Colors are used. Lastly marbles are presented in an ASCII form as I did it here :.)
+
+#### Documentation
+
+RxJS Marbles (https://rxmarbles.com/)  
+RxJS (https://rxjs.dev/)
+
+## Exercises: Observable, Observer and Subscription
+### Subscription Lifecycle
+
+`.subscribe()` creates a subscription (starts Observalbe execution).
+Each `next` notification is handled by the Observers `next` handler.
+When an `error` is emitted it is handled by the Observers `error` handler.
+Finally the `complete` event will be handled by the Observers `complete` handler.
+
+The `error` and `complete` events also run the *teardown* logic of the Observable (so that it can clean up after itself).
+This is also done by calling `.unsubscribe()`. In fact the *teardown* logic will always be run.
+
+### Execution Timing - Empty Observable
+
+------------------------------------------------->  
+*--> Execution Timing - Empty Observable*
+```ts
+import { Observable } from 'rxjs';
+
+const observable$ = new Observable((subscriber) => {
+  console.log('Observable executed');
+});
+
+console.log('Before subscription');
+observable$.subscribe();
+console.log('After subdscribe');
+```
+Key takeaway is here that there is no asynchronous handling here. The code inside the Observable is executed immediately.
 
 
 
