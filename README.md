@@ -55,15 +55,15 @@ storeDataOnServerError('Some value').subscribe({
 });
 ```
 
-## Observable - how does it work
-### Array vs Stream
+# Observable - how does it work
+## Array vs Stream
 
 Array - immediate access to all members  
 Stream - items can come at various points in time
 
 --> reaktive Programming
 
-### Key elements 
+## Key elements 
 
 **Observable:**  
 Simply put, an observable is just an object that holds the declaration of an asynchronous behaviour specified via 
@@ -101,7 +101,7 @@ subscription (by subscribe on the observable) -> observable -> observer
 
 *--> Warm-up Observable - Observable, Observer, Subscription*
 
-### Multiple Subscriptions
+## Multiple Subscriptions
 
 Each new subscription runs the code inside the observable independantly. 
 Subscribing is just like running a regular function with an observer wrapped into a Subscriber object as argument 
@@ -109,7 +109,7 @@ passed to the Observable's logic (which is therefore executed).
 
 *--> Warm-up Observable - multiple Subscriptions*
 
-### Marbles
+## Marbles
 
 if nothing is emmitted:  
 -------------------------------------------------> time
@@ -133,7 +133,7 @@ Notification types:
 | X      | error    | 0..1        |
 | \|     | complete | 0..1        |
 
-#### illegal scenarios
+### illegal scenarios
 
 ----A----B-------|--------C---------------------->
 
@@ -141,7 +141,7 @@ Notification types:
 
 ----A----B-------X---|--------------------------->
 
-#### Appearance
+### Appearance
 
 ----A----B-------C--------D------E--------------->
 
@@ -150,13 +150,13 @@ Sometimes numbers are used when they show the logic of the operator in a better 
 
 Sometimes Colors are used. Lastly marbles are presented in an ASCII form as I did it here :.)
 
-#### Documentation
+### Documentation
 
 RxJS Marbles (https://rxmarbles.com/)  
 RxJS (https://rxjs.dev/)
 
-## Exercises: Observable, Observer and Subscription
-### Subscription Lifecycle
+# Exercises: Observable, Observer and Subscription
+## Subscription Lifecycle
 
 `.subscribe()` creates a subscription (starts Observalbe execution).
 Each `next` notification is handled by the Observers `next` handler.
@@ -166,7 +166,7 @@ Finally the `complete` event will be handled by the Observers `complete` handler
 The `error` and `complete` events also run the *teardown* logic of the Observable (so that it can clean up after itself).
 This is also done by calling `.unsubscribe()`. In fact the *teardown* logic will always be run.
 
-### Execution Timing - Empty Observable
+## Execution Timing - Empty Observable
 
 ------------------------------------------------->  
 *--> Execution Timing - Empty Observable*
@@ -183,7 +183,7 @@ console.log('After subdscribe');
 ```
 Key takeaway is here that there is no asynchronous handling here. The code inside the Observable is executed immediately.
 
-### Synchronous Emmission - Next Notification
+## Synchronous Emmission - Next Notification
 A------------------------------------------------>  
 *--> Synchronous Emmission - Next Notification*
 ```ts
@@ -199,7 +199,7 @@ observable$.subscribe((value) => console.log(value));
 console.log('After subdscribe');
 ```
 
-### Asynchronous Emmission - More Next Notification
+## Asynchronous Emmission - More Next Notification
 AB----C------------------------------------------>  
 *--> Asynchronous Emmission - More Next Notification*
 ```ts
@@ -218,7 +218,7 @@ console.log('After subdscribe');
 ```
 Charlie is now handled asynchronously.
 
-### Teardown - Complete Notification
+## Teardown - Complete Notification
 AB----C|----------------------------------------->  
 *--> Teardown - Complete Notification*
 ```ts
@@ -246,7 +246,7 @@ observable$.subscribe({
 console.log('After subscribe');
 ```
 
-### Error Notification
+## Error Notification
 AB----C----X------------------------------------->  
 *--> Error Notification*
 ```ts
@@ -275,7 +275,7 @@ observable$.subscribe({
 console.log('After subscribe');
 ```
 
-### Order
+## Order
 AB----X----C|------------------------------------->  
 *--> Order*
 ```ts
@@ -305,7 +305,7 @@ observable$.subscribe({
 console.log('After subscribe');
 ```
 
-### Cancellation - Unsubscribe
+## Cancellation - Unsubscribe
 ----1----2----3---->  
 *--> Cancellation - Unsubscribe*
 ```ts
@@ -354,3 +354,29 @@ setTimeout(() => {
     console.log('Unsubscribe');
 }, 7000);
 ```
+# Types of Observables
+## Cold Observables
+
+-----A----B----C--------------------------->
+
+_____-----A----B----C--------------------------->
+
+All values are produced ***independantly*** for each subscription. 
+
+## Cold - Http Request
+
+---------------C|-------------------------->
+
+-----B|------------------------------------>
+
+-------------------------X----------------->
+
+We use Random Data API for our requests (https://random-data-api.com/).
+```ts
+import { ajax } from 'rxjs/ajax';
+
+ajax('https://random-data-api.com/api/name/random_name').subscribe((data) =>
+  console.log(data)
+);
+```
+
