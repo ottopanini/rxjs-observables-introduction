@@ -1,11 +1,12 @@
-import { fromEvent, Observable } from 'rxjs';
+import { fromEvent } from 'rxjs';
 
 const triggerButton = document.querySelector('button#trigger');
 
-const triggerClick$ = new Observable<MouseEvent>((subscriber) => {
-    triggerButton.addEventListener('click', (event) => {
-        subscriber.next(event);
-    });
-});
+const subscription = fromEvent<MouseEvent>(triggerButton, 'click').subscribe(
+    (event) => console.log(event.type, event.x, event.y)
+);
 
-triggerClick$.subscribe((event) => console.log(event.type, event.x, event.y));
+setTimeout(() => {
+    console.log('Unsubscribe');
+    subscription.unsubscribe();
+}, 5000);
