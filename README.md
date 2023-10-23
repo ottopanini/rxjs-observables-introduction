@@ -484,6 +484,22 @@ names$.subscribe({
   complete: () => console.log('Completed'),
 });
 ```
+If we implement the of creation function our selves, it would look like this:
+```ts
+import { Observable, of, Subscriber } from 'rxjs';
+
+ourOwnOf('Alice', 'Ben', 'Charlie').subscribe({
+  next: (value) => console.log(value),
+  complete: () => console.log('Completed'),
+});
+
+function ourOwnOf(...args: string[]): Observable<string> {
+  return new Observable<string>((subscriber) => {
+    args.forEach((value) => subscriber.next(value));
+    subscriber.complete();
+  });
+}
+```
 
 
 
