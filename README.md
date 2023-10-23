@@ -500,6 +500,26 @@ function ourOwnOf(...args: string[]): Observable<string> {
   });
 }
 ```
+## from
+
+`from([A, B, C])`: The `from` creation function works with an array as input elements (instead of multiple arguments).  
+`from(Promise)`: Another popular usage is with a Promise. The Promise's resolve value will be emitted as a next notification and then 
+it will complete. If the promise is rejected the from function will notify with an error.   
+
+*--> from*  
+```ts
+import { from } from 'rxjs';
+
+from(['Alice', 'Ben', 'Charlie']).subscribe({
+  next: (val) => console.log(val),
+  complete: () => console.log('Completed'),
+});
+```
+
+
+
+
+
 
 
 
