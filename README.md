@@ -585,5 +585,20 @@ fromEvent<MouseEvent>(triggerButton, 'click').subscribe((event) =>
   console.log(event.type, event.x, event.y)
 );
 ```
+As a standard Observable implemetation this would look like:
+```ts
+import { fromEvent, Observable } from 'rxjs';
+
+const triggerButton = document.querySelector('button#trigger');
+
+const triggerClick$ = new Observable<MouseEvent>((subscriber) => {
+  triggerButton.addEventListener('click', (event) => {
+    subscriber.next(event);
+  });
+});
+
+triggerClick$.subscribe((event) => console.log(event.type, event.x, event.y));
+```
+
 
 
