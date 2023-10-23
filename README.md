@@ -428,4 +428,12 @@ setTimeout(() => {
     );
 }, 5000);
 ```
+## Hot vs Cold - Comparison
 
+| COLD                      | HOT                                      |
+|---------------------------|------------------------------------------|
+| Produces the data insid e | Multicasts the data from a common source |
+| New Subscriber - new data | All Subscribers - common data            |
+| Set of values             | DOM events                               |
+| Http Request              | State                                    |
+| Timer/Interval            | Subjects                                 |
