@@ -371,6 +371,7 @@ All values are produced ***independantly*** for each subscription.
 
 -------------------------X----------------->
 
+*--> Cold Observables*  
 We use Random Data API for our requests (https://random-data-api.com/).
 ```ts
 import { ajax } from 'rxjs/ajax';
@@ -390,5 +391,41 @@ ajax$.subscribe((data) => console.log('Sub 1:', data.response.first_name));
 ajax$.subscribe((data) => console.log('Sub 2:', data.response.first_name));
 
 ajax$.subscribe((data) => console.log('Sub 3:', data.response.first_name));
+```
+## Hot Observables
+
+1st subscription:
+mouse events ---A---------B---C--------D---E--------->
+
+2nd subscription:
+_____________________-----B---C--------D---E--------->
+
+3rd subscription:
+___________________________________----D---E--------->
+
+Each subscription gets the same events simultaniously.
+*--> Hot Observables*
+
+```ts
+import { Observable } from 'rxjs';
+
+const helloButton = document.querySelector('button#hello');
+
+const helloClick$ = new Observable((subscriber) => {
+    helloButton.addEventListener('click', (event) => {
+        subscriber.next(event);
+    });
+});
+
+helloClick$.subscribe((event) =>
+    console.log('Sub 1: ', event.type, event.x, event.y)
+);
+
+setTimeout(() => {
+    console.log('subscription 2 starts');
+    helloClick$.subscribe((event) =>
+        console.log('Sub 2: ', event.type, event.x, event.y)
+    );
+}, 5000);
 ```
 
