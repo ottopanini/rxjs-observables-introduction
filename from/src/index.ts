@@ -1,6 +1,12 @@
 import { from } from 'rxjs';
 
-from(['Alice', 'Ben', 'Charlie']).subscribe({
+const somePromise = new Promise((resolve, reject) => {
+    resolve('Resolved');
+});
+
+const observableFromPromise$ = from(somePromise);
+
+observableFromPromise$.subscribe({
     next: (val) => console.log(val),
     complete: () => console.log('Completed'),
 });
