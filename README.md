@@ -437,3 +437,23 @@ setTimeout(() => {
 | Set of values             | DOM events                               |
 | Http Request              | State                                    |
 | Timer/Interval            | Subjects                                 |
+
+# Creation Functions
+ 
+`of, from, fromEvent, interval/timer, forkJoin, combineLatest`
+
+these are also called creation operators.
+
+## of - How Creation Functions work
+*--> of - How Creation Functions work*
+
+```ts
+import { of } from 'rxjs';
+
+of('Alice', 'Ben', 'Charlie').subscribe((value) => console.log(value));
+```
+And we can see that all values were emitted immediatly after subscribing.
+
+It also emits a complete notification directly after emitting the last value:
+
+
