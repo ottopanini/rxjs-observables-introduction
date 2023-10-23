@@ -112,16 +112,16 @@ passed to the Observable's logic (which is therefore executed).
 ## Marbles
 
 if nothing is emmitted:  
--------------------------------------------------> time
+`-------------------------------------------------> time`
 
 If A, B and C is emitted (via next):   
-----A----B----------------C---------------------->
+`----A----B----------------C---------------------->`
 
 with complete (|):  
-----A----B----------------C-----------|---------->
+`----A----B----------------C-----------|---------->`
 
 With error (X):  
-----A----B----------------C-----------X---------->
+`----A----B----------------C-----------X---------->`
 
 getting an error notification.
 
@@ -135,18 +135,18 @@ Notification types:
 
 ### illegal scenarios
 
-----A----B-------|--------C---------------------->
+`----A----B-------|--------C---------------------->`
 
-----A----B-------X--------C---------------------->
+`----A----B-------X--------C---------------------->`
 
-----A----B-------X---|--------------------------->
+`----A----B-------X---|--------------------------->`
 
 ### Appearance
 
-----A----B-------C--------D------E--------------->
+`----A----B-------C--------D------E--------------->`
 
 Sometimes numbers are used when they show the logic of the operator in a better way:   
-----5----8-------5-----(-1)------7--------------->
+`----5----8-------5-----(-1)------7--------------->`
 
 Sometimes Colors are used. Lastly marbles are presented in an ASCII form as I did it here :.)
 
@@ -168,7 +168,7 @@ This is also done by calling `.unsubscribe()`. In fact the *teardown* logic will
 
 ## Execution Timing - Empty Observable
 
-------------------------------------------------->  
+`------------------------------------------------->`  
 *--> Execution Timing - Empty Observable*
 ```ts
 import { Observable } from 'rxjs';
@@ -184,7 +184,7 @@ console.log('After subdscribe');
 Key takeaway is here that there is no asynchronous handling here. The code inside the Observable is executed immediately.
 
 ## Synchronous Emmission - Next Notification
-A------------------------------------------------>  
+`A------------------------------------------------>`  
 *--> Synchronous Emmission - Next Notification*
 ```ts
 import { Observable } from 'rxjs';
@@ -200,7 +200,7 @@ console.log('After subdscribe');
 ```
 
 ## Asynchronous Emmission - More Next Notification
-AB----C------------------------------------------>  
+`AB----C------------------------------------------>`  
 *--> Asynchronous Emmission - More Next Notification*
 ```ts
 import { Observable } from 'rxjs';
@@ -219,7 +219,7 @@ console.log('After subdscribe');
 Charlie is now handled asynchronously.
 
 ## Teardown - Complete Notification
-AB----C|----------------------------------------->  
+`AB----C|----------------------------------------->`  
 *--> Teardown - Complete Notification*
 ```ts
 import { Observable } from 'rxjs';
@@ -247,7 +247,7 @@ console.log('After subscribe');
 ```
 
 ## Error Notification
-AB----C----X------------------------------------->  
+`AB----C----X------------------------------------->`  
 *--> Error Notification*
 ```ts
 import { Observable } from 'rxjs';
@@ -276,7 +276,7 @@ console.log('After subscribe');
 ```
 
 ## Order
-AB----X----C|------------------------------------->  
+`AB----X----C|------------------------------------->`  
 *--> Order*
 ```ts
 import { Observable } from 'rxjs';
@@ -306,7 +306,7 @@ console.log('After subscribe');
 ```
 
 ## Cancellation - Unsubscribe
-----1----2----3---->  
+`----1----2----3---->`  
 *--> Cancellation - Unsubscribe*
 ```ts
 import { Observable } from 'rxjs';
@@ -357,19 +357,19 @@ setTimeout(() => {
 # Types of Observables
 ## Cold Observables
 
------A----B----C--------------------------->
+`-----A----B----C--------------------------->`
 
-_____-----A----B----C--------------------------->
+`.....-----A----B----C--------------------------->`
 
 All values are produced ***independantly*** for each subscription. 
 
 ## Cold - Http Request
 
----------------C|-------------------------->
+`---------------C|-------------------------->`
 
------B|------------------------------------>
+`-----B|------------------------------------>`
 
--------------------------X----------------->
+`-------------------------X----------------->`
 
 *--> Cold Observables*  
 We use Random Data API for our requests (https://random-data-api.com/).
@@ -394,14 +394,14 @@ ajax$.subscribe((data) => console.log('Sub 3:', data.response.first_name));
 ```
 ## Hot Observables
 
-1st subscription:
-mouse events ---A---------B---C--------D---E--------->
+1st subscription:  
+`mouse events ---A---------B---C--------D---E--------->`
 
-2nd subscription:
-_____________________-----B---C--------D---E--------->
+2nd subscription:  
+`.....................-----B---C--------D---E--------->`
 
-3rd subscription:
-___________________________________----D---E--------->
+3rd subscription:  
+`...................................----D---E--------->`
 
 Each subscription gets the same events simultaniously.
 *--> Hot Observables*
@@ -553,8 +553,37 @@ import { of, from } from 'rxjs';
 
 from(of('Alice', 'Ben', 'Charlie')).subscribe((val) => console.log(val));
 ```
+## fromEvent
 
+... supports multiple event targets:
+- DOM EventTarget
+- Node.js EventEmitter
+- jQuery Events
 
+### DOM EventTarget - fromEvent(button, 'click')
 
+`subscribe()` will work like `addEventListener()`
+`unsubscribe()` will work like `removeEventListener()`
+
+DOM events:  
+`--------A--------B-----C---------D----------------->`
+
+our subscription:  
+`.............----B-----C---------D->`
+
+We need to unsubscribe() because the DOM events will never complete.
+It is a hot Observable:  
+`...................----C----->`
+
+*--> DOM EventTarget - fromEvent(button, 'click')*
+```ts
+import { fromEvent } from 'rxjs';
+
+const triggerButton = document.querySelector('button#trigger');
+
+fromEvent<MouseEvent>(triggerButton, 'click').subscribe((event) =>
+  console.log(event.type, event.x, event.y)
+);
+```
 
 
