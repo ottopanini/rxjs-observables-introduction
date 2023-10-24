@@ -1096,5 +1096,48 @@ const sportsNewsFeed$ = newsFeed$.pipe(
 
 sportsNewsFeed$.subscribe((item) => console.log(item.content));
 ```
+Naturally we can use the source Observable on its own after we have created the piped one.
+```ts
+//...
+
+newsFeed$.subscribe((item) => console.log(item.content));
+```
+## map
+The `map` operator is the another counterpart of an array function. It can be used to transform the emitted values.
+
+Source Observable  
+`--------3----------4--------1------------>`
+
+`map(x => x * 2)`
+
+Result Observable  
+`--------6----------8--------2------------>`
+
+*--> map*
+```ts
+import { forkJoin } from 'rxjs';
+// Mike is from New Delhi and likes to eat pasta.
+
+import { ajax } from 'rxjs/ajax';
+import { map } from 'rxjs';
+
+const randomName$ = ajax<any>(
+  'https://random-data-api.com/api/name/random_name'
+).pipe(map((response) => response.response.first_name));
+
+const randomNation$ = ajax<any>(
+  'https://random-data-api.com/api/nation/random_nation'
+).pipe(map((response) => response.response.capital));
+
+const randomFood$ = ajax<any>(
+  'https://random-data-api.com/api/food/random_food'
+).pipe(map((response) => response.response.dish));
+
+forkJoin([randomName$, randomNation$, randomFood$]).subscribe(
+  ([first_name, capital, dish]) =>
+    console.log(`${first_name} is from ${capital} and likes to eat ${dish}.`)
+);
+```
+
 
 
