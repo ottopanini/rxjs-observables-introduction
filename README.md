@@ -972,3 +972,94 @@ B
 
 timeline A will be closed and the failure will be reported.
 
+# Pipe-able Operators
+
+... allow to transform the notifications emitted by an Observable in countless ways.
+
+`filter, map, tap, debounceTime, catchError, concat/switch/mergeMap`
+
+## Operator stacking
+
+Source ---------------> Observer
+
+Source --> Operator --> Observer
+
+The Operator subscribes to the source observable and starts emitting notifications.
+
+Source --> Operator1 --> Operator2 --> Operator3 --> Observer
+
+Operators can be stacked.
+
+## Importing Operators
+
+In the videos in this section, the Pipeable Operators are imported from `"rxjs/operators"`, for example:
+
+`import { filter } from "rxjs/operators";`
+
+Starting from **RxJS v7.2.0** you can import the operators directly from the top level (from "rxjs"), for example:
+
+`import { filter } from "rxjs";`
+
+Thanks to this, you can keep all your RxJS-related imports together:
+
+`import { filter, Observable, Subscription } from "rxjs";`
+
+The original way of importing operators still works, but will be deprecated in the future.
+
+## filter
+
+It's the rxjs counterpart of array filters. If a value is emitted by the source Observable this operator will either 
+pass it through to the output Observable or skip it based on the condition provided.
+
+Source  
+`----A1--------B2----C1-----------D2------------E1-------------->`
+
+Result  
+`--------------B2-----------------D2---------------------------->`
+
+notification pass through    
+
+| notification type | result                                   |
+|-------------------|------------------------------------------|
+| next              | filter can pass the notification or skip | 
+| error             | will be passed                           |
+| complete          | will be passed                           |
+
+Source  
+`----A1--------B2----C1-----------D2------------E1-------------->`
+
+Result  
+`--------------B2-----------------D2---------------------------->`
+
+*--> filter*
+```ts
+import { Observable } from 'rxjs';
+import { filter } from 'rxjs';
+
+interface NewsItem {
+  category: 'Business' | 'Sports';
+  content: string;
+}
+
+const newsFeed$ = new Observable<NewsItem>((subscriber) => {
+  setTimeout(
+    () => subscriber.next({ category: 'Business', content: 'A' }),
+    1000
+  );
+  setTimeout(() => subscriber.next({ category: 'Sports', content: 'B' }), 3000);
+  setTimeout(
+    () => subscriber.next({ category: 'Business', content: 'C' }),
+    4000
+  );
+  setTimeout(() => subscriber.next({ category: 'Sports', content: 'D' }), 6000);
+  setTimeout(
+    () => subscriber.next({ category: 'Business', content: 'E' }),
+    7000
+  );
+});
+
+newsFeed$
+  .pipe(filter((item) => item.category === 'Sports'))
+  .subscribe((item) => console.log(item.content));
+```
+
