@@ -663,6 +663,26 @@ setTimeout(() => {
   subscription.unsubscribe();
 }, 5000);
 ```
+## timer
+
+Is similar to the setTimeout Function. After the interval a next notification is emitted with the value '0' followed by
+a complete notification.  
+`...-------0|------>`
+
+*--> timer*
+```ts
+import { timer } from 'rxjs';
+
+console.log('App started');
+
+timer(2000).subscribe({
+  next: (val) => console.log(val),
+  complete: () => console.log('Completed'),
+});
+```
+
+
+
 
 
 
