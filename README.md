@@ -717,5 +717,31 @@ setTimeout(() => {
 Now the next notification does never happen because it is cancelled by the unsubscribe. If we leave the timer proceeding
 till it's own termination, there would be no need to unsubscribe. If we do this with our own 
 implementation it behaves slightly different:
+```ts
+import { Observable } from 'rxjs';
+
+console.log('App started');
+
+const timer$ = new Observable((subscriber) => {
+  setTimeout(() => {
+    console.log('timeout running');
+    subscriber.next(0);
+    subscriber.complete();
+  }, 2000);
+});
+
+const subscription = timer$.subscribe({
+  next: (val) => console.log(val),
+  complete: () => console.log('Completed'),
+});
+
+setTimeout(() => {
+  console.log('Unsubscribe');
+  subscription.unsubscribe();
+}, 1000);
+```
+
+
+
 
 
