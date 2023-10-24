@@ -698,10 +698,24 @@ timer$.subscribe({
   complete: () => console.log('Completed'),
 });
 ```
+But yet it doesn't behave fully like the `timer` function. If extend the previous example a bit we can see why:
+```ts
+import { timer } from 'rxjs';
 
+console.log('App started');
 
+const subscription = timer(2000).subscribe({
+  next: (val) => console.log(val),
+  complete: () => console.log('Completed'),
+});
 
-
-
+setTimeout(() => {
+  console.log('Unsubscribe');
+  subscription.unsubscribe();
+}, 1000);
+```
+Now the next notification does never happen because it is cancelled by the unsubscribe. If we leave the timer proceeding
+till it's own termination, there would be no need to unsubscribe. If we do this with our own 
+implementation it behaves slightly different:
 
 

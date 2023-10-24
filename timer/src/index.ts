@@ -1,15 +1,13 @@
-import { Observable } from 'rxjs';
+import { timer } from 'rxjs';
 
 console.log('App started');
 
-const timer$ = new Observable((subscriber) => {
-    setTimeout(() => {
-        subscriber.next(0);
-        subscriber.complete();
-    }, 2000);
-});
-
-timer$.subscribe({
+const subscription = timer(2000).subscribe({
     next: (val) => console.log(val),
     complete: () => console.log('Completed'),
 });
+
+setTimeout(() => {
+    console.log('Unsubscribe');
+    subscription.unsubscribe();
+}, 1000);
