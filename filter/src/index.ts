@@ -23,6 +23,8 @@ const newsFeed$ = new Observable<NewsItem>((subscriber) => {
     );
 });
 
-newsFeed$
-    .pipe(filter((item) => item.category === 'Sports'))
-    .subscribe((item) => console.log(item.content));
+const sportsNewsFeed$ = newsFeed$.pipe(
+    filter((item) => item.category === 'Sports')
+);
+
+sportsNewsFeed$.subscribe((item) => console.log(item.content));
