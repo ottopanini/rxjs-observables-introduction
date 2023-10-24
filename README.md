@@ -1138,6 +1138,25 @@ forkJoin([randomName$, randomNation$, randomFood$]).subscribe(
     console.log(`${first_name} is from ${capital} and likes to eat ${dish}.`)
 );
 ```
+## tap
+
+`tap` doesn't affect the notifications at all. It can be useful if we have stacked some pipe operators to watch the 
+current state of the transformed notifications. The input notifications will just be reemitted.
+
+*--> tap*
+```ts
+import { filter, map, of, tap } from 'rxjs';
+
+of(1, 7, 3, 6, 2)
+  .pipe(
+    filter((val) => val > 5),
+    tap((val) => console.log('spy: ', val)),
+    map((val) => val * 2)
+  )
+  .subscribe((val) => console.log('output: ', val));
+```
+Medium: Information is King — tap() — how to console.log in RxJS 
+(https://medium.com/@jaywoz/information-is-king-tap-how-to-console-log-in-rxjs-7fc09db0ad5a)
 
 
 
