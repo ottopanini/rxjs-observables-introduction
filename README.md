@@ -916,3 +916,59 @@ forkJoin([a$, b$]).subscribe({
 Wroth noting here is, that forkJoin cleans up both input Observables as soon as a failure
 has occurred.
 
+## combineLatest - Reacting to multiple input changes
+
+... emits a combination of the latest emits of the input Observables each time any of them
+emits something new.
+
+A   
+`---A-----------------B--------------------------C---------->`
+
+B  
+`---------1---------------------2-----------|--------------->`
+
+`combineLatest([A, B])`  
+`---------([A,1])----([B,1])----([B,2])----------([C,2])---->`  
+
+combineLatest awaits that it got a next notification from every of the input Observables 
+before it emits a combined value.
+
+*--> combineLatest*
+```ts
+import { combineLatest, fromEvent } from 'rxjs';
+
+const temperatureInput = document.getElementById('temperature-input');
+const conversionDropdown = document.getElementById('conversion-dropdown');
+const resultText = document.getElementById('result-text');
+
+const temperatureInputEvent$ = fromEvent(temperatureInput, 'input');
+const conversionInputEvent$ = fromEvent(conversionDropdown, 'input');
+
+combineLatest([temperatureInputEvent$, conversionInputEvent$]).subscribe(
+  ([temperatureInputEvent, conversionInputEvent]) => {
+    const temperature = Number(temperatureInputEvent.target['value']);
+    const conversion = conversionInputEvent.target['value'];
+
+    let result: number;
+    if (conversion === 'f-to-c') {
+      result = ((temperature - 32) * 5) / 9;
+    } else if (conversion === 'c-to-f') {
+      result = (temperature * 9) / 5 + 32;
+    }
+
+    resultText.innerText = String(result);
+  }
+);
+```
+When an error occurs:  
+A   
+`---A-----------------B--------------------->`
+
+B  
+`---------1---------------------2-----------X--------------->`
+
+`combineLatest([A, B])`  
+`---------([A,1])----([B,1])----([B,2])-----X--------------->`  
+
+timeline A will be closed and the failure will be reported.
+
