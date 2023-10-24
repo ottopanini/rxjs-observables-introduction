@@ -825,9 +825,41 @@ setTimeout(() => {
   subscription.unsubscribe();
 }, 5000);
 ```
+## forkJoin - Handle multiple Http calls
 
+Accepts an array of Observables as input. It will create Subscriptions to all those Observables and wait for them to
+complete. After that it will emit a set of their **latest** values.  
 
+This can bew usefull if you'd like to call multiple Http endoints at the same time and need to wait for all of of them 
+to respond.
 
+A   
+`----------------------A|--------->`   
+
+B  
+`----------1|--------------------->`  
+
+`forkJoin([A, B])`  
+`----------------------([A,1])|--->`  
+
+*--> forkJoin*
+```ts
+import { forkJoin } from 'rxjs';
+import { ajax, AjaxResponse } from 'rxjs/ajax';
+
+const randomName$ = ajax('https://random-data-api.com/api/name/random_name');
+const randomNation$ = ajax(
+  'https://random-data-api.com/api/nation/random_nation'
+);
+const randomFood$ = ajax('https://random-data-api.com/api/food/random_food');
+
+forkJoin([randomName$, randomNation$, randomFood$]).subscribe(
+  ([nameAjax, nationAjax, foodAjax]) =>
+    console.log(
+      `${nameAjax.response.first_name} is from ${nationAjax.response.capital} and likes to eat ${foodAjax.response.dish}`
+    )
+);
+```
 
 
 
