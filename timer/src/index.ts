@@ -3,11 +3,13 @@ import { Observable } from 'rxjs';
 console.log('App started');
 
 const timer$ = new Observable((subscriber) => {
-    setTimeout(() => {
+    const timoutId = setTimeout(() => {
         console.log('timeout running');
         subscriber.next(0);
         subscriber.complete();
     }, 2000);
+
+    return () => clearTimeout(timoutId);
 });
 
 const subscription = timer$.subscribe({
