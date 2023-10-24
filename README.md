@@ -767,6 +767,21 @@ setTimeout(() => {
 }, 1000);
 ```
 
+## interval
+
+Is similar to timer but it doesn't stop with the first notification.  
+`----0----1----2----3----4-->`  
+*--> interval*
+```ts
+import { interval } from 'rxjs';
+
+console.log('App started');
+
+const subscription = interval(1000).subscribe({
+  next: (val) => console.log(val),
+  complete: () => console.log('Completed'),
+});
+```
 
 
 
