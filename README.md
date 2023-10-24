@@ -860,6 +860,59 @@ forkJoin([randomName$, randomNation$, randomFood$]).subscribe(
     )
 );
 ```
+Let's say we multiple results on our timelines A and B. The `forkJoin`will no matter what wait until both are completed
+and its result will have the last values of both before completion:  
+A   
+`------A---------B-------------C-|--------->`
 
+B  
+`----------1-----------2---|--------------->`
 
+`forkJoin([A, B])`  
+`--------------------------------([C,2])|-->`  
+
+### forkJoin - Error Scenarios
+
+A   
+`-------A|----------------------->`
+
+B  
+`------------------X------------->`
+
+`forkJoin([A, B])`  
+`------------------X------------->`  
+
+*--> forkJoin - Error Scenarios*
+```ts
+import { forkJoin, Observable } from 'rxjs';
+
+const a$ = new Observable((subscription) => {
+  setTimeout(() => {
+    subscription.next('A');
+    subscription.complete();
+  }, 5000);
+
+  return () => {
+    console.log('A teardown');
+  };
+});
+
+const b$ = new Observable((subscription) => {
+  setTimeout(() => {
+    subscription.error('Failure');
+  }, 3000);
+
+  return () => {
+    console.log('B teardown');
+  };
+});
+
+forkJoin([a$, b$]).subscribe({
+  next: (val) => console.log(val),
+  complete: () => console.log('Completed'),
+  error: (error) => console.log('Error: ', error),
+});
+```
+Wroth noting here is, that forkJoin cleans up both input Observables as soon as a failure
+has occurred.
 
