@@ -1158,5 +1158,28 @@ of(1, 7, 3, 6, 2)
 Medium: Information is King — tap() — how to console.log in RxJS 
 (https://medium.com/@jaywoz/information-is-king-tap-how-to-console-log-in-rxjs-7fc09db0ad5a)
 
+## debounceTime
 
+next: moved in time
+complete: pass through
+error: pass through
 
+`--A-------B--C------------------>`
+
+debounceTime(2000)
+
+`-------A----------C------------->`
+
+*--> debounceTime*
+```ts
+import { fromEvent, debounceTime, map } from 'rxjs';
+
+const sliderInput = document.querySelector('input#slider');
+
+fromEvent(sliderInput, 'input')
+  .pipe(
+    debounceTime(2000),
+    map((evt) => evt.target['value'])
+  )
+  .subscribe((val) => console.log(val));
+```
