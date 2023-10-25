@@ -1219,3 +1219,23 @@ failingHttpRequest$.subscribe((value) => console.log(value));
 this fails with:  
 ![img.png](img.png)
 
+Now let's add the catchError operator:
+```ts
+import { Observable } from 'rxjs';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
+const failingHttpRequest$ = new Observable((subscriber) => {
+  setTimeout(() => {
+    subscriber.error(new Error('Timeout'));
+  }, 3000);
+});
+
+console.log('App started');
+
+failingHttpRequest$
+  .pipe(catchError((error) => of('fallback value')))
+  .subscribe((value) => console.log(value));
+```  
+![img_1.png](img_1.png)  
+
