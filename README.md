@@ -1339,3 +1339,57 @@ fromEvent(fetchButton, 'click')
         error: (err) => console.log('Error: ', err),
     });
 ```
+### Flattening operators - Error Handling - First Solution
+
+Source  
+`------A------------>` ends here in case of an error in the inner Observable
+
+
+`concatMap(value => getDataObservable(value)`  
+`......-------------X---->`
+
+Result  
+`-------------------X------------------------------->`
+
+If we want to ignore the error, we can do it like this:
+
+Source  
+`------A------------------------------------------->` 
+
+`concatMap(value => getDataObservable(value))`  
+`......-------------X------------------------------>`
+
+`catchError(() => EMPTY)`  
+
+Result  
+`-------------------|------------------------------>`  
+*--> Flattening operators - Error Handling - First Solution*
+```ts
+import { catchError, concatMap, EMPTY, fromEvent, map } from 'rxjs';
+import { ajax } from 'rxjs/ajax';
+
+const endpointInput: HTMLInputElement =
+  document.querySelector('input#endpoint');
+const fetchButton = document.querySelector('button#fetch');
+
+fromEvent(fetchButton, 'click')
+  .pipe(
+    map(() => endpointInput.value),
+    concatMap((value) =>
+      ajax(`https://random-data-api.com/api/${value}/random_${value}`)
+    ),
+    catchError(() => EMPTY)
+  )
+  .subscribe({
+    next: (val) => console.log(val),
+    error: (err) => console.log('Error: ', err),
+    complete: () => console.log('Completed'),
+  });
+```
+![img_4.png](img_4.png)
+
+Downside: Because it completes the outer Observable even if we input working fetches
+afterward they wouldn't be executed.
+
+
+
