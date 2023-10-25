@@ -1503,6 +1503,8 @@ Result
 # Subjects
 
 ... are both Observables and Observers. They can be used to multicast notifications to multiple subscribers.
+It can be passed to the subscribe function as an Observer. It can be used to subscribe to an Observable. We can mix it 
+together with other Observables using operators.
 
 ## Multicasting
 
