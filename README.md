@@ -1183,3 +1183,39 @@ fromEvent(sliderInput, 'input')
   )
   .subscribe((val) => console.log(val));
 ```
+## catchError
+
+| notification type | handling                                |
+|-------------------|-----------------------------------------|
+| next              | pass through                            |
+| error             | creates an observables and completes it |
+| complete          | pass through                            |
+
+`-----A------B-----------------X------------->`
+
+`catchError(error => fallbackObservable$)`  
+`..............................--(C|)-------->`
+
+`-----A------B-------------------(C|)-------->`
+
+what gets emitted by the fallbackObservable$ will be passed through to the output. If the fallbackObservable$ errors
+it will be the final outcome.
+
+*--> catchError*
+Let's first create the scenario:
+```ts
+import { Observable } from 'rxjs';
+
+const failingHttpRequest$ = new Observable((subscriber) => {
+    setTimeout(() => {
+        subscriber.error(new Error('Timeout'));
+    }, 3000);
+});
+
+console.log('App started');
+
+failingHttpRequest$.subscribe((value) => console.log(value));
+```
+this fails with:  
+![img.png](img.png)
+
