@@ -1,4 +1,4 @@
-import { BehaviorSubject, fromEvent, Subject } from 'rxjs';
+import { BehaviorSubject, fromEvent, Subject, withLatestFrom } from 'rxjs';
 
 const loggedInSpan: HTMLElement = document.querySelector('span#logged-in');
 const loginButton: HTMLElement = document.querySelector('button#login');
@@ -22,6 +22,8 @@ isLoggedIn$.subscribe((isLoggedIn) => {
     loginButton.style.display = !isLoggedIn ? 'block' : 'none';
 });
 
-fromEvent(printStateButton, 'click').subscribe(() =>
-    console.log('User is logged in: ', isLoggedIn$.value)
-);
+fromEvent(printStateButton, 'click')
+    .pipe(withLatestFrom(isLoggedIn$))
+    .subscribe(([event, isLoggendIn]) =>
+        console.log('User is logged in: ', isLoggendIn)
+    );
