@@ -1268,4 +1268,40 @@ failingHttpRequest$.pipe(catchError((error) => EMPTY)).subscribe({
 ```
 ![img_2.png](img_2.png)
 
+## Flattening operators
 
+`concatMap, switchMap, mergeMap, exhaustMap`
+
+notification types:  
+next:  
+`A`
+
+`-1-(3|)-->`
+
+error: pass through  
+complete: pass through
+
+source   
+`------A--------------------B------------------------>`
+
+`concatMap(() => newStream$)`   
+`.......-1-2-|-->...........-1-2-|-->`
+
+result  
+`--------1-2-----------------1-2--------------------->`
+
+### Flattening operators - static example
+*--> Flattening operators - static example*
+```ts
+import { concatMap, Observable, Subscriber } from 'rxjs';
+import { of } from 'rxjs';
+
+const source$ = new Observable((subscriber) => {
+  setTimeout(() => subscriber.next('A'), 2000);
+  setTimeout(() => subscriber.next('B'), 5000);
+});
+
+console.log('App started');
+source$.pipe(concatMap((val) => of(1, 2))).subscribe((val) => console.log(val));
+```
+![img_3.png](img_3.png)
