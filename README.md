@@ -1499,3 +1499,60 @@ Result
 | Memory leaks       | easy to notice   | not dangerous        | hard to notice |
 | Order              | one by one       | mostly safe          | no definitive  |
 | Reaction           | delayed          | quick                | mixed          |
+
+# Subjects
+
+... are both Observables and Observers. They can be used to multicast notifications to multiple subscribers.
+
+## Multicasting
+
+... is the process of sending notifications to multiple subscribers. It can be described as a hot Observable, because 
+the Subject itself is a shared source of the notifications. 
+
+We can have multiple subscribers to a Subject. If we have multiple subscribers to an Observable, each of them will get
+its own execution of the Observable. If we have multiple subscribers to a Subject, they will share the same execution of
+the Subject. Once we call 'next' on a Subject, all of its subscribers will get the same notification.
+
+## Subject vs Observable vs Observer
+
+| Subject   | Observable      | Observer                            |
+|:----------|:----------------|:------------------------------------|
+| multicast | unicast         | unicast                             |
+| hot       | cold            | cold                                |
+|           | .subscribe(...) | .next(value), .error(), .complete() |
+
+## Subject in Action
+Subject  
+`------A-------B-------C-----X--->`   
+  
+S  
+`------A-------B-------C-----X--->`  
+  
+A  
+`..................----C-----X--->`  
+  
+B  
+`..........----B-------C-----X--->`
+
+*--> Subject in Action*
+```ts
+import { fromEvent, map, Subject } from 'rxjs';
+
+const emitButton = document.querySelector('button#emit');
+const inputElement: HTMLInputElement = document.querySelector('#value-input');
+const subscribeButton = document.querySelector('button#subscribe');
+
+const value$ = new Subject<string>();
+
+fromEvent(emitButton, 'click')
+  .pipe(map(() => inputElement.value))
+  .subscribe(value$);
+
+fromEvent(subscribeButton, 'click').subscribe(() => {
+  console.log('New Subscription');
+  value$.subscribe((value) => console.log(value));
+});
+```
+
+
+
