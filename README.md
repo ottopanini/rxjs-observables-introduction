@@ -1194,9 +1194,9 @@ fromEvent(sliderInput, 'input')
 `-----A------B-----------------X------------->`
 
 `catchError(error => fallbackObservable$)`  
-`..............................--(C|)-------->`
+`..............................(C|)---------->`
 
-`-----A------B-------------------(C|)-------->`
+`-----A------B-----------------(C|)---------->`
 
 what gets emitted by the fallbackObservable$ will be passed through to the output. If the fallbackObservable$ errors
 it will be the final outcome.
@@ -1238,4 +1238,34 @@ failingHttpRequest$
   .subscribe((value) => console.log(value));
 ```  
 ![img_1.png](img_1.png)  
+
+What can we do to just ignore the error? We can use the Observable:
+`EMPTY`
+
+`----A------B----------X------------------>`
+
+`catchError(() => EMPTY)`  
+`......................|------------------>`
+
+`----A------B----------|------------------>`
+```ts
+import { EMPTY, Observable } from 'rxjs';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
+const failingHttpRequest$ = new Observable((subscriber) => {
+  setTimeout(() => {
+    subscriber.error(new Error('Timeout'));
+  }, 3000);
+});
+
+console.log('App started');
+
+failingHttpRequest$.pipe(catchError((error) => EMPTY)).subscribe({
+  next: (value) => console.log(value),
+  complete: () => console.log('Completed'),
+});
+```
+![img_2.png](img_2.png)
+
 
