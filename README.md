@@ -1391,5 +1391,49 @@ fromEvent(fetchButton, 'click')
 Downside: Because it completes the outer Observable even if we input working fetches
 afterward they wouldn't be executed.
 
+### Flattening operators - Error Handling - Second Solution
+
+Source  
+`------A--------------------B---------------------->`
+
+`concatMap(value => getDataObservable(value))`  
+`......-------------X-----------------------(5|)--->`
+
+`catchError(() => EMPTY)`  
+`-------------------|->.....----------------(5|)--->`
+
+Result  
+`--------------------------------------------5----->`
+
+For B there is no error so the catchError operator will just pass through the
+next notification e.g. flattened to the output.  
+
+*--> Flattening operators - Error Handling - Second Solution*
+```ts
+import { EMPTY, fromEvent } from 'rxjs';
+import { ajax } from 'rxjs/ajax';
+import { catchError, concatMap, map } from 'rxjs/operators';
+
+const endpointInput: HTMLInputElement =
+  document.querySelector('input#endpoint');
+const fetchButton = document.querySelector('button#fetch');
+
+fromEvent(fetchButton, 'click')
+  .pipe(
+    map(() => endpointInput.value),
+    concatMap((value) =>
+      ajax(`https://random-data-api.com/api/${value}/random_${value}`).pipe(
+        catchError(() => EMPTY)
+      )
+    )
+  )
+  .subscribe({
+    next: (value) => console.log(value),
+    error: (err) => console.log('Error:', err),
+    complete: () => console.log('Completed'),
+  });
+```
+This works because the concatMap doesn't pass through complete notifications.
+
 
 
