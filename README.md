@@ -1278,8 +1278,8 @@ next:
 
 `-1-(3|)-->`
 
-error: pass through  
-complete: pass through
+error: pass through
+complete: **not** passed through
 
 source   
 `------A--------------------B------------------------>`
@@ -1435,5 +1435,67 @@ fromEvent(fetchButton, 'click')
 ```
 This works because the concatMap doesn't pass through complete notifications.
 
+Until now all we've covered is the same for all flattening operators. What makes them
+differ is how they handle concurrency.
 
+### Flattening operators - Concurrency - concatMap
 
+Source  
+`--------A---------B--------------------------->`
+
+`concatMap(() => neverendingObservable$)`   
+`........----1-----2--------------------------->`
+
+Result    
+`------------1-----2--------------------------->`
+
+concatMap guarantees that all notifications are passed through in the right order one after the other.
+
+Source  
+`--------A---------B-------------------------->`
+
+`concatMap(() => storeOnServer(value))`   
+`........--------------1----2----------------->`
+
+Result    
+`----------------------1----2----------------->`
+
+### Flattening operators - Concurrency - switchMap
+
+Source  
+`--------A---------B-------------------------->`
+
+`switchMap(() => getDataObservable(value))`   
+`........--------->---------(6|)-------------->`
+
+Result    
+`----------------------------6---------------->`
+
+switchMap doesn't wait for the first Observable to complete. Instead, it just starts the second one on time.
+
+**!!! Danger:** Especially when doing requests to a server be aware that just unsubscribing doesn't cancel the request 
+(done by the underlying OS). The request might already have been sent and will reach the server anyway.
+
+Don't save on the server using switchMap. For fetching on the other hand it can be used.
+
+### Flattening operators - Concurrency - mergeMap
+
+Source  
+`--------A---------B----------C--------------->`
+
+`merge(() => getDataObservable(value))`   
+`........--------------(1|)>..----(6|)->`
+
+`..................--------------------(3|)->`
+
+Result    
+`-----------------------1----------6----3--->`
+
+### Flattening operators - Side by side comparison
+
+| category           | concatMap        | switchMap            | mergeMap       |
+|:-------------------|:-----------------|:---------------------|:---------------|
+| inner subscription | Queues / Buffers | Cancels/Unsubscribes | Concurrent     |
+| Memory leaks       | easy to notice   | not dangerous        | hard to notice |
+| Order              | one by one       | mostly safe          | no definitive  |
+| Reaction           | delayed          | quick                | mixed          |
