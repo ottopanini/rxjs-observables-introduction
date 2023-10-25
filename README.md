@@ -1305,3 +1305,37 @@ console.log('App started');
 source$.pipe(concatMap((val) => of(1, 2))).subscribe((val) => console.log(val));
 ```
 ![img_3.png](img_3.png)
+
+### Flattening operators - Dynamic Http Request
+
+Source  
+`-----A---------------------B----------------------->`
+
+
+`concatMap(value => requestData(value))`  
+`.....--(1|)->..............-----------(5|)--------->`
+
+Result  
+`-------1------------------------------5------------>`
+
+*--> Flattening operators - Dynamic Http Request*
+```ts
+import { concatMap, fromEvent, map } from 'rxjs';
+import { ajax } from 'rxjs/ajax';
+
+const endpointInput: HTMLInputElement =
+    document.querySelector('input#endpoint');
+const fetchButton = document.querySelector('button#fetch');
+
+fromEvent(fetchButton, 'click')
+    .pipe(
+        map(() => endpointInput.value),
+        concatMap((value) =>
+            ajax(`https://random-data-api.com/api/${value}/random_${value}`)
+        )
+    )
+    .subscribe({
+        next: (val) => console.log(val),
+        error: (err) => console.log('Error: ', err),
+    });
+```
