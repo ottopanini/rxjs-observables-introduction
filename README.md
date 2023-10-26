@@ -1274,21 +1274,22 @@ failingHttpRequest$.pipe(catchError((error) => EMPTY)).subscribe({
 
 notification types:  
 next:  
-`A`
+`A`  
 
+`inner Observable`   
 `-1-(3|)-->`
 
-error: pass through
+error: pass through  
 complete: **not** passed through
 
 source   
 `------A--------------------B------------------------>`
 
 `concatMap(() => newStream$)`   
-`.......-1-2-|-->...........-1-2-|-->`
+`......-1-2-|-->............-1-2-|-->`
 
 result  
-`--------1-2-----------------1-2--------------------->`
+`-------1-2------------------1-2--------------------->`
 
 ### Flattening operators - static example
 *--> Flattening operators - static example*
