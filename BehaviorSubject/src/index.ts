@@ -1,4 +1,4 @@
-import { BehaviorSubject, fromEvent, Subject, withLatestFrom } from 'rxjs';
+import { BehaviorSubject, fromEvent, withLatestFrom } from 'rxjs';
 
 const loggedInSpan: HTMLElement = document.querySelector('span#logged-in');
 const loginButton: HTMLElement = document.querySelector('button#login');
@@ -11,19 +11,21 @@ const isLoggedIn$ = new BehaviorSubject<boolean>(false);
 fromEvent(loginButton, 'click').subscribe(() => isLoggedIn$.next(true));
 fromEvent(logoutButton, 'click').subscribe(() => isLoggedIn$.next(false));
 
+const isLoggedInAsObservable$ = isLoggedIn$.asObservable();
+
 // Navigation bar
-isLoggedIn$.subscribe(
+isLoggedInAsObservable$.subscribe(
     (isLoggedIn) => (loggedInSpan.innerText = isLoggedIn.toString())
 );
 
 // Buttons
-isLoggedIn$.subscribe((isLoggedIn) => {
+isLoggedInAsObservable$.subscribe((isLoggedIn) => {
     logoutButton.style.display = isLoggedIn ? 'block' : 'none';
     loginButton.style.display = !isLoggedIn ? 'block' : 'none';
 });
 
 fromEvent(printStateButton, 'click')
-    .pipe(withLatestFrom(isLoggedIn$))
+    .pipe(withLatestFrom(isLoggedInAsObservable$))
     .subscribe(([event, isLoggendIn]) =>
         console.log('User is logged in: ', isLoggendIn)
     );
